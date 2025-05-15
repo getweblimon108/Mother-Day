@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Garden for Mom 🌸</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:wght@400;700&family=Montserrat:wght@300&family=Dancing_Script:wght@700&family=Pacifico&family=Satisfy&display=swap');
+        
+        :root {
+            --lavender: #E6E6FA;
+            --blush-pink: #FFB6C1;
+            --mint-green: #98FB98;
+            --deep-navy: #000080;
+            --gold: #FFD700;
+            --rose-gold: #e0bfb8;
+            --soft-pink: #ffdde2;
+            --ground-day: linear-gradient(to top, var(--mint-green), var(--deep-navy));
+            --ground-night: linear-gradient(to top, #1a2a3a, #000);
+            --sky-day: linear-gradient(to bottom, #87CEEB, #fff);
+        }
+        
+        body {
+            margin: 0;
+            background: #fff;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+        
+        .night-mode body {
+            background: #000;
+        }
+        
+        .garden {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--sky-day);
+            animation: fadeInGarden 2s ease-in;
+            transition: background 1s ease;
+        }
+        
+        .night-mode .garden {
+            background: linear-gradient(to bottom, #001f3f, #000);
+        }
+        
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: var(--ground-day);
+            z-index: -1;
+            border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+            box-shadow: inset 0 -20px 30px rgba(0,100,0,0.2);
+            transition: background 1s ease;
+        }
+        
+        .night-mode .ground {
+            background: var(--ground-night);
+            box-shadow: inset 0 -20px 30px rgba(0,0,0,0.5);
+        }
+        
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            color: var(--gold);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            margin-bottom: 0;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: floatDown 1.5s ease-out forwards;
+        }
+        
+        .night-mode h1 {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .subtitle {
+            font-family: 'Lora', serif;
+            color: var(--deep-navy);
+            font-size: 1.3rem;
+            margin-top: 10px;
+            transform: translateY(50px);
+            opacity: 0;
+            animation: floatDown 1.5s ease-out 0.3s forwards;
+        }
+        
+        .night-mode .subtitle {
+            color: #fff;
+        }
+        
+        .flower-bed {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            max-width: 800px;
+        }
+        
+        .flower-pot {
+            width: 85px;
+            height: 125px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            animation: sway 5s ease-in-out infinite alternate;
+        }
+        
+        .pot {
+            width: 55px;
+            height: 40px;
+            background: var(--deep-navy);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .pot::before {
+            content: "";
+            position: absolute;
+            top: -7px;
+            left: -4px;
+            width: 63px;
+            height: 10px;
+            background: var(--gold);
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        }
+        
+        .stem {
+            width: 6px;
+            height: 55px;
+            background: linear-gradient(to right, var(--mint-green), var(--deep-navy));
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            border-radius: 2px;
+            transform-origin: bottom;
+        }
+        
+        .night-mode .stem {
+            background: linear-gradient(to right, #4a6b7c, #1a2a3a);
+        }
+        
+        .bloom-area {
+            width: 70px;
+            height: 70px;
+            position: absolute;
+            bottom: 95px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(90deg);
+            transform-origin: bottom;
+            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.6);
+            z-index: 2;
+        }
+        
+        .night-mode .bloom-area {
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.5));
+        }
+        
+        .flower-pot.active .bloom-area {
+            transform: translateX(-50%) rotateX(0deg) rotateY(360deg);
+        }
+        
+        .petal {
+            position: absolute;
+            width: 28px;
+            height: 42px;
+            border-radius: 50%;
+            transform-origin: bottom center;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            transition: all 0.5s ease-out;
+            opacity: 0;
+            transform: scale(0);
+        }
+        
+        .flower-pot.active .petal:nth-child(1) { transition-delay: 0s; opacity: 1; transform: scale(1); }
+        .flower-pot.active .petal:nth-child(2) { transition-delay: 0.2s; opacity: 1; transform: scale(1); }
+        .flower-pot.active .petal:nth-child(3) { transition-delay: 0.4s; opacity: 1; transform: scale(1); }
+        .flower-pot.active .petal:nth-child(4) { transition-delay: 0.6s; opacity: 1; transform: scale(1); }
+        .flower-pot.active .petal:nth-child(5) { transition-delay: 0.8s; opacity: 1; transform: scale(1); }
+        .flower-pot.active .petal:nth-child(6) { transition-delay: 1s; opacity: 1; transform: scale(1); }
+        
+        .center {
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            box-shadow: 0 0 15px var(--gold);
+            animation: pulse 2s infinite alternate;
+        }
+        
+        .memory-bubble {
+            position: relative;
+            width: 150px;
+            background: white;
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: all 0.5s;
+            z-index: 10;
+            pointer-events: none;
+            font-size: 0.8rem;
+            text-align: center;
+            font-family: 'Lora', serif;
+            color: var(--deep-navy);
+        }
+        
+        .night-mode .memory-bubble {
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+        }
+        
+        .flower-pot.active .memory-bubble {
+            opacity: 1;
+            transform: translateY(-20px);
+            animation: fadeIn 0.5s ease-in;
+            pointer-events: auto;
+        }
+        
+        .memory-bubble .edit-memory {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.6rem;
+            cursor: pointer;
+        }
+        
+        .memory-bubble:hover::before {
+            content: 'Click to bloom, edit to personalize!';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            z-index: 11;
+        }
+        
+        .butterfly {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,20 Q70,10 80,30 Q90,50 80,70 Q70,90 50,80 Q30,90 20,70 Q10,50 20,30 Q30,10 50,20 Z" fill="%23ff69b4"/><path d="M50,20 Q30,30 20,30 Q30,50 20,70 Q30,50 50,60 Q70,50 80,70 Q70,50 80,30 Q70,30 50,20 Z" fill="%23ff1493"/></svg>');
+            background-size: contain;
+            z-index: 5;
+            animation: floatAround 15s linear infinite;
+        }
+        
+        .sun {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--gold), #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #fff, 0 0 60px #ff8c00, 0 0 100px var(--gold);
+            transition: all 1s ease;
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 1;
+            animation: glowPulse 1s ease-in-out infinite alternate;
+        }
+        
+        .moon {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #fff, 0 0 50px #f5f5f5, 0 0 80px rgba(255,255,255,0.5);
+            transition: all 1s ease;
+            opacity: 0;
+            transform: translateY(100px);
+            z-index: 1;
+            animation: glowPulse 1.5s ease-in-out infinite alternate;
+        }
+        
+        .night-mode .sun {
+            opacity: 0;
+            transform: translateY(-100px);
+        }
+        
+        .night-mode .moon {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .night-mode .stars {
+            opacity: 1;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        
+        .special-star {
+            background: #ffd700;
+            box-shadow: 0 0 10px #ffd700;
+            cursor: pointer;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+            opacity: 0.9;
+            animation: floatCloud 60s linear infinite;
+            transition: opacity 1s ease;
+        }
+        
+        .night-mode .cloud {
+            opacity: 0.3;
+        }
+        
+        .firefly {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffd700;
+            opacity: 0;
+            cursor: pointer;
+            animation: floatFirefly 10s linear infinite, pulseFirefly 1.5s infinite alternate;
+        }
+        
+        .night-mode .firefly {
+            opacity: 1;
+        }
+        
+        .falling-petal {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--blush-pink);
+            border-radius: 50% 50% 0 0;
+            opacity: 0.7;
+            z-index: 2;
+            animation: fallPetal 6s linear forwards;
+        }
+        
+        .garden-sign {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-5deg);
+            width: 200px;
+            height: 60px;
+            background: linear-gradient(to bottom, #8B4513, #A0522D);
+            border: 3px solid #5C4033;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            cursor: pointer;
+        }
+        
+        .garden-sign p {
+            font-family: 'Satisfy', cursive;
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin: 0;
+        }
+        
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--soft-pink), var(--lavender));
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOut 1s ease-out 5s forwards;
+        }
+        
+        .intro-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 5rem;
+            color: var(--deep-navy);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s ease-out 0.5s forwards;
+        }
+        
+        .intro-subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--rose-gold);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 1s ease-out 1s forwards;
+        }
+        
+        .heart-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,30 Q30,10 10,30 Q-5,50 25,80 L50,100 L75,80 Q105,50 90,30 Q70,10 50,30 Z" fill="%23e91e63"/></svg>') no-repeat center;
+            background-size: contain;
+            opacity: 0;
+            animation: heartBeat 1s ease-in-out infinite, fadeIn 0.5s ease-out 1.5s forwards;
+        }
+        
+        .heart:nth-child(2) {
+            transform: scale(0.8);
+            animation-delay: 1.7s;
+        }
+        
+        .heart:nth-child(3) {
+            transform: scale(0.6);
+            animation-delay: 1.9s;
+        }
+        
+        .intro-message {
+            font-family: 'Lora', serif;
+            font-size: 1.2rem;
+            color: var(--deep-navy);
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 2.5s forwards;
+        }
+        
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 101;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 24px;
+            color: var(--rose-gold);
+            opacity: 0;
+            animation: floatUp 4s linear forwards;
+        }
+        
+        .click-heart {
+            position: absolute;
+            font-size: 20px;
+            color: var(--rose-gold);
+            opacity: 0;
+            animation: heartPop 1s ease-out forwards;
+        }
+        
+        .message-card {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: rotate(-5deg);
+            transition: all 0.5s ease;
+            z-index: 20;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 6s forwards;
+        }
+        
+        .message-card:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+        
+        .message-card h3 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--deep-navy);
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+        
+        .message-card p {
+            font-family: 'Lora', serif;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .day-night-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            transition: background 0.3s ease;
+            z-index: 20;
+        }
+        
+        .day-night-toggle .toggle-ball {
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            left: 2px;
+            transition: transform 0.3s ease, background 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .day-night-toggle .toggle-ball i {
+            font-size: 1rem;
+            color: var(--deep-navy);
+        }
+        
+        .night-mode .day-night-toggle {
+            background: #333;
+        }
+        
+        .night-mode .day-night-toggle .toggle-ball {
+            transform: translateX(30px);
+            background: #fff;
+        }
+        
+        .day-night-toggle:hover {
+            background: #ccc;
+        }
+        
+        .night-mode .day-night-toggle:hover {
+            background: #444;
+        }
+        
+        .bird {
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10,50 Q30,30 50,50 Q70,30 90,50 Q70,70 50,50 Q30,70 10,50 Z" fill="%23000"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 2;
+            animation: flyAcross 20s linear infinite;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--gold);
+            opacity: 0;
+            z-index: 1000;
+            animation: confettiFall 5s linear forwards;
+        }
+        
+        .edit-message {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+        
+        @keyframes fadeInGarden {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes floatDown {
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes sway {
+            0% { transform: rotate(-1deg); }
+            100% { transform: rotate(1deg); }
+        }
+        
+        @keyframes floatAround {
+            0% { transform: translate(0,0) rotate(0deg); }
+            25% { transform: translate(80px,-40px) rotate(15deg); }
+            50% { transform: translate(150px,0) rotate(0deg); }
+            75% { transform: translate(80px,40px) rotate(-15deg); }
+            100% { transform: translate(0,0) rotate(0deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        @keyframes floatCloud {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes flyAcross {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(calc(100vw + 100px)); }
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0); opacity: 1; }
+            100% { transform: translateX(100vw) translateY(50vh); opacity: 0; }
+        }
+        
+        @keyframes floatFirefly {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(50px,-30px); }
+            50% { transform: translate(100px,0); }
+            75% { transform: translate(50px,30px); }
+            100% { transform: translate(0,0); }
+        }
+        
+        @keyframes pulseFirefly {
+            0% { box-shadow: 0 0 8px #ffd700; opacity: 0.5; }
+            100% { box-shadow: 0 0 12px #ffd700; opacity: 1; }
+        }
+        
+        @keyframes fallPetal {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0.7; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes heartPop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 15px #fff, 0 0 50px #ff8c00, 0 0 80px var(--gold); }
+            100% { box-shadow: 0 0 20px #fff, 0 0 60px #ff8c00, 0 0 100px var(--gold); }
+        }
+        
+        .moon { animation: glowPulse 1.5s ease-in-out infinite alternate; }
+        .moon { box-shadow: 0 0 15px #fff, 0 0 50px #f5f5f5, 0 0 80px rgba(255,255,255,0.5); }
+        
+        .flower-pot:nth-child(1) .petal { background: var(--lavender); }
+        .flower-pot:nth-child(2) .petal { background: var(--blush-pink); }
+        .flower-pot:nth-child(3) .petal { background: var(--mint-green); }
+        .flower-pot:nth-child(4) .petal { background: var(--deep-navy); }
+        .flower-pot:nth-child(5) .petal { background: var(--gold); }
+        
+        .petal:nth-child(1) { transform: rotate(0deg) translateY(-21px); }
+        .petal:nth-child(2) { transform: rotate(60deg) translateY(-21px); }
+        .petal:nth-child(3) { transform: rotate(120deg) translateY(-21px); }
+        .petal:nth-child(4) { transform: rotate(180deg) translateY(-21px); }
+        .petal:nth-child(5) { transform: rotate(240deg) translateY(-21px); }
+        .petal:nth-child(6) { transform: rotate(300deg) translateY(-21px); }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .flower-bed { gap: 12px; padding: 15px; }
+            .flower-pot { width: 70px; height: 100px; }
+            .pot { width: 45px; height: 35px; }
+            .pot::before { width: 53px; height: 8px; top: -6px; left: -4px; }
+            .stem { width: 5px; height: 45px; bottom: 35px; }
+            .bloom-area { width: 60px; height: 60px; bottom: 80px; }
+            .petal { width: 24px; height: 36px; }
+            .center { width: 18px; height: 18px; }
+            .memory-bubble { width: 120px; font-size: 0.7rem; padding: 10px; }
+            .intro-title { font-size: 3rem; }
+            .intro-subtitle { font-size: 1.8rem; }
+            .message-card { width: 150px; right: 10px; bottom: 10px; }
+            .garden-sign { width: 150px; height: 45px; }
+            .garden-sign p { font-size: 1.2rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .flower-bed { flex-direction: column; align-items: center; }
+            .message-card { display: none; }
+            .garden-sign { width: 120px; height: 40px; }
+            .garden-sign p { font-size: 1rem; }
+        }
+
+
+
+
+       /* Base styles (assuming these exist in the original code) */
+.garden {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.flower-bed {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.flower-pot {
+    width: 80px;
+    height: 120px;
+    position: relative;
+}
+
+.garden-sign {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-5deg);
+    width: 200px;
+    height: 60px;
+}
+
+.message-card {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+}
+
+.butterfly, .bird {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+
+.sun, .moon {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 60px;
+    height: 60px;
+}
+
+.day-night-toggle {
+    width: 50px;
+    height: 25px;
+}
+
+/* Media query for screens up to 768px */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    .flower-bed {
+        gap: 12px;
+        padding: 15px;
+    }
+    .flower-pot {
+        width: 70px;
+        height: 100px;
+    }
+    .pot {
+        width: 45px;
+        height: 35px;
+    }
+    .stem {
+        width: 5px;
+        height: 45px;
+        bottom: 35px;
+    }
+    .bloom-area {
+        width: 60px;
+        height: 60px;
+        bottom: 80px;
+    }
+    .petal {
+        width: 24px;
+        height: 36px;
+    }
+    .center {
+        width: 18px;
+        height: 18px;
+    }
+    .memory-bubble {
+        width: 120px;
+        font-size: 0.7rem;
+        padding: 10px;
+    }
+    .intro-title {
+        font-size: 3rem;
+    }
+    .intro-subtitle {
+        font-size: 1.8rem;
+    }
+    .message-card {
+        width: 150px;
+        right: 10px;
+        bottom: 10px;
+    }
+    .garden-sign {
+        width: 150px;
+        height: 45px;
+        top: 50px;
+    }
+    .garden-sign p {
+        font-size: 1.2rem;
+    }
+    .butterfly, .bird {
+        width: 20px;
+        height: 20px;
+    }
+    .garden {
+        padding-bottom: 100px; /* Space for message card */
+    }
+}
+
+/* Media query for screens up to 480px */
+@media (max-width: 480px) {
+    .flower-bed {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px; /* Increased gap for vertical spacing */
+    }
+    .message-card {
+        display: block; /* Keep visible, adjust position if needed */
+        width: 120px;
+        bottom: 10px;
+        right: 10px;
+    }
+    .garden-sign {
+        width: 120px;
+        height: 40px;
+        top: 30px;
+    }
+    .garden-sign p {
+        font-size: 1rem;
+    }
+    .day-night-toggle {
+        width: 40px;
+        height: 20px;
+    }
+    .day-night-toggle .toggle-ball {
+        width: 18px;
+        height: 18px;
+    }
+    .night-mode .day-night-toggle .toggle-ball {
+        transform: translateX(20px);
+    }
+    .garden {
+        padding-bottom: 80px;
+    }
+}
+
+/* Media query for screens up to 360px */
+@media (max-width: 360px) {
+    .flower-pot {
+        width: 60px;
+        height: 90px;
+    }
+    .pot {
+        width: 40px;
+        height: 30px;
+    }
+    .stem {
+        width: 4px;
+        height: 40px;
+        bottom: 30px;
+    }
+    .bloom-area {
+        width: 50px;
+        height: 50px;
+        bottom: 70px;
+    }
+    .petal {
+        width: 20px;
+        height: 30px;
+    }
+    .center {
+        width: 15px;
+        height: 15px;
+    }
+    .memory-bubble {
+        width: 100px;
+        font-size: 0.6rem;
+        padding: 8px;
+    }
+    .garden-sign {
+        width: 100px;
+        height: 30px;
+        top: 20px;
+    }
+    .garden-sign p {
+        font-size: 0.8rem;
+    }
+    .sun, .moon {
+        width: 40px;
+        height: 40px;
+        top: 10px;
+        right: 10px;
+    }
+    .intro-title {
+        font-size: 2.5rem;
+    }
+    .intro-subtitle {
+        font-size: 1.5rem;
+    }
+    .butterfly, .bird {
+        width: 20px;
+        height: 20px;
+    }
+} 
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="intro-overlay" id="introOverlay">
+        <div class="heart-container">
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+        </div>
+        <h1 class="intro-title">Happy Mother's Day</h1>
+        <h2 class="intro-subtitle">To the World's Best Mom</h2>
+        <p class="intro-message">A garden of memories blooms for you today<br>Each flower holds a special moment we've shared</p>
+        <div class="floating-hearts" id="floatingHearts"></div>
+    </div>
+    
+    <div class="garden" id="garden">
+        <div class="stars" id="stars"></div>
+        
+        <div class="sun"></div>
+        <div class="moon"></div>
+        
+        <div class="ground"></div>
+        
+        <div class="cloud" style="width: 100px; height: 60px; top: 20%; left: -200px; animation-delay: 0s;"></div>
+        <div class="cloud" style="width: 150px; height: 80px; top: 30%; left: -200px; animation-delay: 10s;"></div>
+        <div class="cloud" style="width: 120px; height: 70px; top: 15%; left: -200px; animation-delay: 20s;"></div>
+        <div class="cloud" style="width: 130px; height: 70px; top: 25%; left: -200px; animation-delay: 30s;"></div>
+        <div class="cloud" style="width: 110px; height: 65px; top: 35%; left: -200px; animation-delay: 40s;"></div>
+        
+        <div class="bird" style="top: 15%; animation-delay: 2s; animation-duration: 25s;"></div>
+        <div class="bird" style="top: 25%; animation-delay: 5s; animation-duration: 30s;"></div>
+        <div class="bird" style="top: 20%; animation-delay: 8s; animation-duration: 20s;"></div>
+        
+        <div class="message-card" id="messageCard">
+            <h3>Dear Mom</h3>
+            <p id="messageText">Thank you for everything you do. You're the most amazing mother in the world!</p>
+            <div class="edit-message" id="editMessage">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+        </div>
+        
+        <div class="day-night-toggle" id="dayNightToggle">
+            <div class="toggle-ball">
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+        
+        <div class="garden-sign" id="gardenSign">
+            <p id="signText">Mom's Garden</p>
+        </div>
+        
+        <h1>Mom's Secret Garden</h1>
+        <p class="subtitle">Click each flower to discover special memories</p>
+        
+        <div class="flower-bed">
+            <div class="flower-pot" onclick="activateFlower(this)">
+                <div class="pot"></div>
+                <div class="stem"></div>
+                <div class="bloom-area">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="center"></div>
+                </div>
+                <div class="memory-bubble">
+                    <span>Thanks for all things you have taught me<br>Your patience and encouragement mean everything.</span>
+                    <div class="edit-memory"><i class="fas fa-pencil-alt"></i></div>
+                </div>
+            </div>
+            
+            <div class="flower-pot" onclick="activateFlower(this)">
+                <div class="pot"></div>
+                <div class="stem"></div>
+                <div class="bloom-area">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="center"></div>
+                </div>
+                <div class="memory-bubble">
+                    <span>Your homemade cookies after school<br>were the highlight of my day!</span>
+                    <div class="edit-memory"><i class="fas fa-pencil-alt"></i></div>
+                </div>
+            </div>
+            
+            <div class="flower-pot" onclick="activateFlower(this)">
+                <div class="pot"></div>
+                <div class="stem"></div>
+                <div class="bloom-area">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="center"></div>
+                </div>
+                <div class="memory-bubble">
+                    <span>Thank you for all the bedtime stories<br>that filled my childhood with magic.</span>
+                    <div class="edit-memory"><i class="fas fa-pencil-alt"></i></div>
+                </div>
+            </div>
+            
+            <div class="flower-pot" onclick="activateFlower(this)">
+                <div class="pot"></div>
+                <div class="stem"></div>
+                <div class="bloom-area">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="center"></div>
+                </div>
+                <div class="memory-bubble">
+                    <span>Your hugs have healing powers<br>that no medicine can match.</span>
+                    <div class="edit-memory"><i class="fas fa-pencil-alt"></i></div>
+                </div>
+            </div>
+            
+            <div class="flower-pot" onclick="activateFlower(this)">
+                <div class="pot"></div>
+                <div class="stem"></div>
+                <div class="bloom-area">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="center"></div>
+                </div>
+                <div class="memory-bubble">
+                    <span>I'll never forget how you stayed up all night<br>helping me with my science project.</span>
+                    <div class="edit-memory"><i class="fas fa-pencil-alt"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="butterfly" style="top: 30%; left: 10%; animation-delay: 0s;"></div>
+        <div class="butterfly" style="top: 60%; left: 20%; animation-delay: 2s; animation-duration: 20s;"></div>
+        <div class="butterfly" style="top: 40%; left: 70%; animation-delay: 5s; animation-duration: 18s;"></div>
+    </div>
+
+    <script>
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 200;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                if (i % 10 === 0) {
+                    star.classList.add('special-star');
+                    star.style.width = '10px';
+                    star.style.height = '10px';
+                    star.style.cursor = 'pointer';
+                    star.addEventListener('click', () => {
+                        alert('You found a special star! A wish for Mom!');
+                    });
+                } else {
+                    star.style.width = (Math.random() * 4 + 1) + 'px';
+                    star.style.height = star.style.width;
+                }
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = (Math.random() * 2) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.position = 'absolute';
+            shootingStar.style.width = '2px';
+            shootingStar.style.height = '2px';
+            shootingStar.style.background = 'white';
+            shootingStar.style.boxShadow = '0 0 10px white';
+            shootingStar.style.left = Math.random() * 100 + 'vw';
+            shootingStar.style.top = Math.random() * 50 + 'vh';
+            shootingStar.style.animation = 'shoot 1s linear';
+            document.getElementById('stars').appendChild(shootingStar);
+            setTimeout(() => shootingStar.remove(), 1000);
+        }
+        
+        function createFireflies() {
+            const starsContainer = document.getElementById('stars');
+            const fireflyCount = 20;
+            
+            for (let i = 0; i < fireflyCount; i++) {
+                const firefly = document.createElement('div');
+                firefly.className = 'firefly';
+                firefly.style.left = Math.random() * 100 + 'vw';
+                firefly.style.top = Math.random() * 100 + 'vh';
+                firefly.style.animationDelay = (Math.random() * 5) + 's';
+                firefly.addEventListener('click', (e) => {
+                    const heart = document.createElement('div');
+                    heart.className = 'click-heart';
+                    heart.innerHTML = '❤';
+                    heart.style.left = e.clientX + 'px';
+                    heart.style.top = e.clientY + 'px';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 1000);
+                });
+                starsContainer.appendChild(firefly);
+            }
+        }
+        
+        function createFallingPetals() {
+            if (document.getElementById('garden').classList.contains('night-mode')) return;
+            
+            const petalCount = 10;
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'falling-petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.background = Math.random() > 0.5 ? 'var(--blush-pink)' : '#fff';
+                petal.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                petal.style.animationDelay = (Math.random() * 2) + 's';
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 6000);
+            }
+        }
+        
+        let activeFlowers = 0;
+        const totalFlowers = document.querySelectorAll('.flower-pot').length;
+        
+        function activateFlower(pot) {
+            const wasActive = pot.classList.contains('active');
+            pot.classList.toggle('active');
+            
+            pot.style.transform = 'translateY(-7px) rotateY(360deg)';
+            setTimeout(() => {
+                pot.style.transform = 'translateY(0) rotateY(0deg)';
+            }, 300);
+            
+            if (pot.classList.contains('active') && !wasActive) {
+                activeFlowers++;
+                createFloatingParticles(pot);
+                
+                if (activeFlowers === totalFlowers) {
+                    createConfetti();
+                }
+            } else if (!pot.classList.contains('active') && wasActive) {
+                activeFlowers--;
+            }
+        }
+        
+        function createFloatingParticles(pot) {
+            const particles = 8;
+            for (let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.background = 'var(--gold)';
+                particle.style.borderRadius = '50%';
+                particle.style.left = pot.offsetLeft + 42 + 'px';
+                particle.style.top = pot.offsetTop + 'px';
+                particle.style.opacity = '0';
+                particle.style.animation = 'floatParticle 2s ease-out forwards';
+                particle.style.zIndex = '4';
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+        
+        function createConfetti() {
+            const confettiCount = 100;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    confetti.style.width = (Math.random() * 8 + 4) + 'px';
+                    confetti.style.height = (Math.random() * 8 + 4) + 'px';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 50);
+            }
+        }
+        
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const heartCount = 20;
+            
+            for (let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.innerHTML = '❤';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.bottom = '0';
+                    heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    heart.style.animationDelay = (Math.random() * 2) + 's';
+                    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    container.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 300);
+            }
+        }
+        
+        function setupMessageCard() {
+            const messageCard = document.getElementById('messageCard');
+            const messageText = document.getElementById('messageText');
+            const editMessage = document.getElementById('editMessage');
+            
+            editMessage.addEventListener('click', (e) => {
+                e.stopPropagation();
+                messageText.contentEditable = true;
+                messageText.focus();
+            });
+            
+            messageText.addEventListener('blur', () => {
+                messageText.contentEditable = false;
+            });
+            
+            messageText.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+        
+        function setupMemoryBubbles() {
+            const memoryBubbles = document.querySelectorAll('.memory-bubble');
+            memoryBubbles.forEach(bubble => {
+                const span = bubble.querySelector('span');
+                const editButton = bubble.querySelector('.edit-memory');
+                
+                editButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    span.contentEditable = true;
+                    span.focus();
+                });
+                
+                span.addEventListener('blur', () => {
+                    span.contentEditable = false;
+                });
+                
+                span.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            });
+        }
+        
+        function setupGardenSign() {
+            const gardenSign = document.getElementById('gardenSign');
+            const signText = document.getElementById('signText');
+            
+            gardenSign.addEventListener('click', () => {
+                signText.contentEditable = true;
+                signText.focus();
+            });
+            
+            signText.addEventListener('blur', () => {
+                signText.contentEditable = false;
+                if (!signText.textContent.trim()) {
+                    signText.textContent = "Mom's Garden";
+                }
+            });
+        }
+        
+        function setupDayNightToggle() {
+            const dayNightToggle = document.getElementById('dayNightToggle');
+            const toggleBall = dayNightToggle.querySelector('.toggle-ball');
+            const garden = document.getElementById('garden');
+            
+            dayNightToggle.addEventListener('click', () => {
+                garden.classList.toggle('night-mode');
+                
+                if (garden.classList.contains('night-mode')) {
+                    toggleBall.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    toggleBall.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+        
+        window.onload = function() {
+            createStars();
+            createFireflies();
+            createFloatingHearts();
+            setupMessageCard();
+            setupMemoryBubbles();
+            setupGardenSign();
+            setupDayNightToggle();
+            
+            setTimeout(() => {
+                document.querySelector('.flower-pot').click();
+            }, 6000);
+            
+            setInterval(createShootingStar, 5000);
+            setInterval(createFallingPetals, 5000);
+        };
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatParticle {
+                0% { transform: translateY(0) translateX(0); opacity: 1; }
+                100% { transform: translateY(-70px) translateX(${Math.random() * 70 - 35}px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
